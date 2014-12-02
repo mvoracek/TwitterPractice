@@ -14,6 +14,9 @@
 		C979C8321A2CC8DE00D940EC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C979C8311A2CC8DE00D940EC /* Images.xcassets */; };
 		C979C8351A2CC8DE00D940EC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C979C8331A2CC8DE00D940EC /* LaunchScreen.xib */; };
 		C979C8411A2CC8DE00D940EC /* TwitterPracticeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C979C8401A2CC8DE00D940EC /* TwitterPracticeTests.m */; };
+		C979C84B1A2CCA8C00D940EC /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C979C84A1A2CCA8C00D940EC /* Twitter.framework */; };
+		C979C84D1A2CCD4F00D940EC /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C979C84C1A2CCD4F00D940EC /* Social.framework */; };
+		C979C84F1A2D233B00D940EC /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C979C84E1A2D233B00D940EC /* Accounts.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +43,9 @@
 		C979C83A1A2CC8DE00D940EC /* TwitterPracticeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwitterPracticeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C979C83F1A2CC8DE00D940EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C979C8401A2CC8DE00D940EC /* TwitterPracticeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwitterPracticeTests.m; sourceTree = "<group>"; };
+		C979C84A1A2CCA8C00D940EC /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		C979C84C1A2CCD4F00D940EC /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		C979C84E1A2D233B00D940EC /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +53,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C979C84F1A2D233B00D940EC /* Accounts.framework in Frameworks */,
+				C979C84D1A2CCD4F00D940EC /* Social.framework in Frameworks */,
+				C979C84B1A2CCA8C00D940EC /* Twitter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +72,9 @@
 		C979C8181A2CC8DE00D940EC = {
 			isa = PBXGroup;
 			children = (
+				C979C84E1A2D233B00D940EC /* Accounts.framework */,
+				C979C84C1A2CCD4F00D940EC /* Social.framework */,
+				C979C84A1A2CCA8C00D940EC /* Twitter.framework */,
 				C979C8231A2CC8DE00D940EC /* TwitterPractice */,
 				C979C83D1A2CC8DE00D940EC /* TwitterPracticeTests */,
 				C979C8221A2CC8DE00D940EC /* Products */,
