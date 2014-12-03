@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C906DB951A2FA28F00AB2507 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB941A2FA28F00AB2507 /* Accounts.framework */; };
+		C906DB971A2FA29700AB2507 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB961A2FA29700AB2507 /* Social.framework */; };
+		C906DB991A2FA29D00AB2507 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB981A2FA29D00AB2507 /* Twitter.framework */; };
 		C974A4101A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F41A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m */; };
 		C974A4111A2F9C1C00FB595B /* NSError+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F61A2F9C1C00FB595B /* NSError+STTwitter.m */; };
 		C974A4121A2F9C1C00FB595B /* NSString+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F81A2F9C1C00FB595B /* NSString+STTwitter.m */; };
@@ -40,6 +43,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C906DB941A2FA28F00AB2507 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		C906DB961A2FA29700AB2507 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		C906DB981A2FA29D00AB2507 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		C974A3F31A2F9C1C00FB595B /* NSDateFormatter+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+STTwitter.h"; sourceTree = "<group>"; };
 		C974A3F41A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+STTwitter.m"; sourceTree = "<group>"; };
 		C974A3F51A2F9C1C00FB595B /* NSError+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+STTwitter.h"; sourceTree = "<group>"; };
@@ -88,6 +94,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C906DB991A2FA29D00AB2507 /* Twitter.framework in Frameworks */,
+				C906DB971A2FA29700AB2507 /* Social.framework in Frameworks */,
+				C906DB951A2FA28F00AB2507 /* Accounts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,6 +156,9 @@
 		C979C8181A2CC8DE00D940EC = {
 			isa = PBXGroup;
 			children = (
+				C906DB981A2FA29D00AB2507 /* Twitter.framework */,
+				C906DB961A2FA29700AB2507 /* Social.framework */,
+				C906DB941A2FA28F00AB2507 /* Accounts.framework */,
 				C974A3F21A2F9C1C00FB595B /* STTwitter */,
 				C979C8231A2CC8DE00D940EC /* TwitterPractice */,
 				C979C83D1A2CC8DE00D940EC /* TwitterPracticeTests */,

@@ -29,42 +29,7 @@ static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp"
 {
     [super viewDidLoad];
     
-    
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    self.session = [NSURLSession sessionWithConfiguration:config];
-    NSURL *searchURL = [self createURLWithSearch];
-    [self searchResultsFromURL:searchURL];
-}
-
-- (void)authorization
-{
-    
-}
-
-- (NSURL *)createURLWithSearch
-{
-    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/search/tweets.json?q=wwdc"];
-    return url;
-}
-
-- (void)searchResultsFromURL:(NSURL *)url
-{
-    NSURLSessionDataTask *dataTask = [self.session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (!error) {
-            NSHTTPURLResponse *httpResp = (NSHTTPURLResponse *)response;
-            NSLog(@"%ld", (long)httpResp.statusCode);
-            if (httpResp.statusCode == 200) {
-                NSDictionary *searchJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-                NSLog(@"%@", searchJSON);
-                
-            } else {
-                //json error handling
-            }
-        } else {
-            //error handling
-        }
-    }];
-    [dataTask resume];
+    [self searchResultsFromValue:@"wwdc"];
 }
 
 - (void)searchResultsFromValue:(NSString *)value
@@ -74,6 +39,18 @@ static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp"
                                                      oauthToken:OAUTH_TOKEN
                                                oauthTokenSecret:OAUTH_SECRET];
     
+    [self.twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
+        
+        [self.twitter getSearchTweetsWithQuery:value geocode:nil lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:nil callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
+            NSLog(@"%@", statuses);
+        } errorBlock:^(NSError *error) {
+            NSLog(@"%@", error.debugDescription);
+        }];
+        
+        
+    } errorBlock:^(NSError *error) {
+        NSLog(@"%@", error.debugDescription);
+    }];
 }
 
 @end
