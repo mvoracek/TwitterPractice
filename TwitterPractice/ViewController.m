@@ -7,8 +7,7 @@
 //
 
 #import "ViewController.h"
-#import <Social/Social.h>
-#import <Accounts/Accounts.h>
+
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -29,10 +28,16 @@ static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp"
 {
     [super viewDidLoad];
     
+    
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     self.session = [NSURLSession sessionWithConfiguration:config];
     NSURL *searchURL = [self createURLWithSearch];
     [self searchResultsFromURL:searchURL];
+}
+
+- (void)authorization
+{
+    
 }
 
 - (NSURL *)createURLWithSearch
