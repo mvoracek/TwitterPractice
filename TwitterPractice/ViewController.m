@@ -7,13 +7,14 @@
 //
 
 #import "ViewController.h"
-
+#import "STTwitter.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 
 @property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong) STTwitterAPI *twitter;
 
 @end
 
@@ -64,6 +65,15 @@ static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp"
         }
     }];
     [dataTask resume];
+}
+
+- (void)searchResultsFromValue:(NSString *)value
+{
+    self.twitter = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TWITTER_CONSUMER_KEY
+                                                 consumerSecret:TWITTER_CONSUMER_SEC
+                                                     oauthToken:OAUTH_TOKEN
+                                               oauthTokenSecret:OAUTH_SECRET];
+    
 }
 
 @end
