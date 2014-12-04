@@ -10,6 +10,7 @@
 		C906DB951A2FA28F00AB2507 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB941A2FA28F00AB2507 /* Accounts.framework */; };
 		C906DB971A2FA29700AB2507 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB961A2FA29700AB2507 /* Social.framework */; };
 		C906DB991A2FA29D00AB2507 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB981A2FA29D00AB2507 /* Twitter.framework */; };
+		C906DB9C1A2FB21A00AB2507 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C906DB9B1A2FB21A00AB2507 /* TableViewCell.m */; };
 		C974A4101A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F41A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m */; };
 		C974A4111A2F9C1C00FB595B /* NSError+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F61A2F9C1C00FB595B /* NSError+STTwitter.m */; };
 		C974A4121A2F9C1C00FB595B /* NSString+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F81A2F9C1C00FB595B /* NSString+STTwitter.m */; };
@@ -46,6 +47,8 @@
 		C906DB941A2FA28F00AB2507 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		C906DB961A2FA29700AB2507 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		C906DB981A2FA29D00AB2507 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		C906DB9A1A2FB21900AB2507 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
+		C906DB9B1A2FB21A00AB2507 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		C974A3F31A2F9C1C00FB595B /* NSDateFormatter+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+STTwitter.h"; sourceTree = "<group>"; };
 		C974A3F41A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+STTwitter.m"; sourceTree = "<group>"; };
 		C974A3F51A2F9C1C00FB595B /* NSError+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+STTwitter.h"; sourceTree = "<group>"; };
@@ -182,6 +185,8 @@
 				C979C8291A2CC8DE00D940EC /* AppDelegate.m */,
 				C979C82B1A2CC8DE00D940EC /* ViewController.h */,
 				C979C82C1A2CC8DE00D940EC /* ViewController.m */,
+				C906DB9A1A2FB21900AB2507 /* TableViewCell.h */,
+				C906DB9B1A2FB21A00AB2507 /* TableViewCell.m */,
 				C979C82E1A2CC8DE00D940EC /* Main.storyboard */,
 				C979C8311A2CC8DE00D940EC /* Images.xcassets */,
 				C979C8331A2CC8DE00D940EC /* LaunchScreen.xib */,
@@ -325,6 +330,7 @@
 				C974A4101A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m in Sources */,
 				C974A4141A2F9C1C00FB595B /* STTwitterAPI.m in Sources */,
 				C974A4131A2F9C1C00FB595B /* STHTTPRequest+STTwitter.m in Sources */,
+				C906DB9C1A2FB21A00AB2507 /* TableViewCell.m in Sources */,
 				C974A4161A2F9C1C00FB595B /* STTwitterHTML.m in Sources */,
 				C974A41C1A2F9C1C00FB595B /* STHTTPRequest.m in Sources */,
 				C974A4151A2F9C1C00FB595B /* STTwitterAppOnly.m in Sources */,
