@@ -51,7 +51,7 @@ static NSString *const CellID = @"SearchResults";
     [self.twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
         NSString *geo = [NSString stringWithFormat:@"%@,%@,%@", Latitude, Longitude, Range];
         
-        [self.twitter getSearchTweetsWithQuery:value geocode:geo lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:nil callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
+        [self.twitter getSearchTweetsWithQuery:value geocode:geo lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:@1 callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
             NSLog(@"%@", statuses);
             [self.tweets addObjectsFromArray:statuses];
             [self refreshTableView];
@@ -110,6 +110,29 @@ static NSString *const CellID = @"SearchResults";
     return returnDate;
 }
 
+- (void)downloadImageWithURL:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (!error)
+                               {
+                                   UIImage *image = [[UIImage alloc] initWithData:data];
+                                   completionBlock(YES,image);
+                               } else{
+                                   completionBlock(NO,nil);
+                               }
+                           }];
+}
+
+- (void)displayInlinePhoto
+{
+    
+}
+
+#pragma mark - Text Field
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     [textField becomeFirstResponder];
@@ -154,6 +177,23 @@ static NSString *const CellID = @"SearchResults";
         //error handling
     }];
     
+    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
+    
+    if (mediaDict) {
+        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
+            cell.inlinePhoto.image = nil;
+            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
+            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    cell.inlinePhoto.image = image;
+                } else {
+                    //error handling
+                }
+            }];
+        }
+    }
+    
+   
     return cell;
 }
 
@@ -165,9 +205,9 @@ static NSString *const CellID = @"SearchResults";
     return [self.tweets count];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 160.0;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return 200.0;
+//}
 
 @end
