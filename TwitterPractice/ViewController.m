@@ -11,13 +11,14 @@
 #import "TableViewCell.h"
 #import <CoreLocation/CoreLocation.h>
 
-@interface ViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface ViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 
 @property (nonatomic, strong) STTwitterAPI *twitter;
 @property (nonatomic, strong) NSMutableArray *tweets;
+@property BOOL clearData;
 
 @end
 
@@ -38,8 +39,6 @@ static NSString *const CellID = @"SearchResults";
 {
     [super viewDidLoad];
     self.tweets = [NSMutableArray array];
-    
-    [self searchResultsFromValue:@"chicago"];
 }
 
 - (void)searchResultsFromValue:(NSString *)value
@@ -111,6 +110,24 @@ static NSString *const CellID = @"SearchResults";
     return returnDate;
 }
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [textField becomeFirstResponder];
+    [textField setText:@""];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    self.clearData = YES;
+    [self.tableView reloadData];
+    [self.tweets removeAllObjects];
+    self.clearData = NO;
+    NSString *searchValue = textField.text;
+    [self searchResultsFromValue:searchValue];
+    [textField resignFirstResponder];
+    return NO;
+}
+
 #pragma mark - Table View
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -142,6 +159,9 @@ static NSString *const CellID = @"SearchResults";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (self.clearData) {
+        return 0;
+    }
     return [self.tweets count];
 }
 
