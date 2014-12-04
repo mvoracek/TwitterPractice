@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "STTwitter.h"
 #import "TableViewCell.h"
+#import <CoreLocation/CoreLocation.h>
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -25,6 +26,10 @@ static NSString *TWITTER_CONSUMER_SEC = @"0zfaijLMWMYTwVosdqFTL3k58JhRjZNxd2q0i9
 static NSString *OAUTH_TOKEN = @"2305278770-GGw8dQQg3o5Vqfx9xHpUgJ0CDUe3BoNmUNeWZBg";
 static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp";
 
+static NSString *Latitude = @"41.8369";
+static NSString *Longitude = @"-87.6847";
+static NSString *Range = @"5mi";
+
 static NSString *const CellID = @"SearchResults";
 
 @implementation ViewController
@@ -34,8 +39,7 @@ static NSString *const CellID = @"SearchResults";
     [super viewDidLoad];
     self.tweets = [NSMutableArray array];
     
-    
-    [self searchResultsFromValue:@"wwdc"];
+    [self searchResultsFromValue:@"chicago"];
 }
 
 - (void)searchResultsFromValue:(NSString *)value
@@ -46,8 +50,9 @@ static NSString *const CellID = @"SearchResults";
                                                oauthTokenSecret:OAUTH_SECRET];
     
     [self.twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
+        NSString *geo = [NSString stringWithFormat:@"%@,%@,%@", Latitude, Longitude, Range];
         
-        [self.twitter getSearchTweetsWithQuery:value geocode:nil lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:nil callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
+        [self.twitter getSearchTweetsWithQuery:value geocode:geo lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:nil callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
             NSLog(@"%@", statuses);
             [self.tweets addObjectsFromArray:statuses];
             [self refreshTableView];
@@ -74,7 +79,6 @@ static NSString *const CellID = @"SearchResults";
     [df setDateFormat:@"eee MMM dd HH:mm:ss ZZZZ yyyy"];
     NSDate *userPostDate = [df dateFromString:tweetDate];
     
-    
     NSDate *currentDate = [NSDate date];
     NSTimeInterval distanceBetweenDates = [currentDate timeIntervalSinceDate:userPostDate];
     
@@ -95,13 +99,13 @@ static NSString *const CellID = @"SearchResults";
     NSString *returnDate;
     if ([conversionInfo month] > 0) {
         returnDate = [NSString stringWithFormat:@"%ldmth",(long)[conversionInfo month]];
-    }else if ([conversionInfo day] > 0){
+    } else if ([conversionInfo day] > 0) {
         returnDate = [NSString stringWithFormat:@"%ldd",(long)[conversionInfo day]];
-    }else if ([conversionInfo hour]>0){
+    } else if ([conversionInfo hour] > 0) {
         returnDate = [NSString stringWithFormat:@"%ldh",(long)[conversionInfo hour]];
-    }else if ([conversionInfo minute]>0){
+    } else if ([conversionInfo minute] > 0) {
         returnDate = [NSString stringWithFormat:@"%ldm",(long)[conversionInfo minute]];
-    }else{
+    } else {
         returnDate = [NSString stringWithFormat:@"%lds",(long)[conversionInfo second]];
     }
     return returnDate;
@@ -120,6 +124,7 @@ static NSString *const CellID = @"SearchResults";
     NSString *screenName = tweetDict[@"user"][@"screen_name"];
     NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
     
+    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
     cell.timeLabel.text = tweetDate;
     cell.screenImage.text = screenName;
     cell.tweetText.text = tweetDict[@"text"];
@@ -142,7 +147,7 @@ static NSString *const CellID = @"SearchResults";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 120.0;
+    return 160.0;
 }
 
 @end

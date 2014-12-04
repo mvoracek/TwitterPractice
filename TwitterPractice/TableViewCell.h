@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *screenImage;
 @property (weak, nonatomic) IBOutlet UILabel *tweetText;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *placeLabel;
 
 
 @end
