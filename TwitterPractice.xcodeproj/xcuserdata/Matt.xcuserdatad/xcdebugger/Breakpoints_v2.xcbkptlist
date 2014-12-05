@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TwitterPractice/ViewController.m"
-            timestampString = "439480269.239197"
+            timestampString = "439486465.44062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "-formatTweetDateFromJSON:"
             landmarkType = "5">
          </BreakpointContent>

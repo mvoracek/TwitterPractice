@@ -82,12 +82,17 @@ static NSString *const CellID = @"SearchResults";
 
 - (void)refreshByControl
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-    });
-    
-    [self searchResultsFromValue:self.searchValue];
+    [self refreshTable];
     [self.refreshControl endRefreshing];
+}
+
+- (void)refreshTable
+{
+    self.clearData = YES;
+    [self.tableView reloadData];
+    [self.tweets removeAllObjects];
+    self.clearData = NO;
+    [self searchResultsFromValue:self.searchValue];
 }
 
 
@@ -155,12 +160,8 @@ static NSString *const CellID = @"SearchResults";
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    self.clearData = YES;
-    [self.tableView reloadData];
-    [self.tweets removeAllObjects];
-    self.clearData = NO;
     self.searchValue = textField.text;
-    [self searchResultsFromValue:self.searchValue];
+    [self refreshTable];
     [textField resignFirstResponder];
     return NO;
 }
