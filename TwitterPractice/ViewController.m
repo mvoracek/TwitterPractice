@@ -170,6 +170,7 @@ static NSString *const CellID = @"SearchResults";
     cell.tweetText.text = tweetDict[@"text"];
     cell.tweetText.numberOfLines = 0;
     [cell.tweetText sizeToFit];
+    cell.inlinePhoto.image = nil;
     
     [self.twitter profileImageFor:screenName successBlock:^(id image) {
         cell.userImage.image = image;
@@ -181,7 +182,6 @@ static NSString *const CellID = @"SearchResults";
     
     if (mediaDict) {
         if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
-            cell.inlinePhoto.image = nil;
             NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
             [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
                 if (succeeded) {
