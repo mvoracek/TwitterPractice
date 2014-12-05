@@ -16,8 +16,10 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 
+@property  UIRefreshControl *refreshControl;
 @property (nonatomic, strong) STTwitterAPI *twitter;
 @property (nonatomic, strong) NSMutableArray *tweets;
+@property (nonatomic, strong) NSString *searchValue;
 @property BOOL clearData;
 
 @end
@@ -27,8 +29,8 @@ static NSString *TWITTER_CONSUMER_SEC = @"0zfaijLMWMYTwVosdqFTL3k58JhRjZNxd2q0i9
 static NSString *OAUTH_TOKEN = @"2305278770-GGw8dQQg3o5Vqfx9xHpUgJ0CDUe3BoNmUNeWZBg";
 static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp";
 
-static NSString *Latitude = @"41.8369";
-static NSString *Longitude = @"-87.6847";
+static NSString *Latitude = @"41.879778";
+static NSString *Longitude = @"-87.62855";
 static NSString *Range = @"5mi";
 
 static NSString *const CellID = @"SearchResults";
@@ -39,6 +41,12 @@ static NSString *const CellID = @"SearchResults";
 {
     [super viewDidLoad];
     self.tweets = [NSMutableArray array];
+    self.searchValue = [[NSString alloc] init];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshByControl) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.refreshControl atIndex:0];
+//    [self.tableView addSubview:refreshControl];
+    
 }
 
 - (void)searchResultsFromValue:(NSString *)value
@@ -71,6 +79,17 @@ static NSString *const CellID = @"SearchResults";
         [self.tableView reloadData];
     });
 }
+
+- (void)refreshByControl
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
+    
+    [self searchResultsFromValue:self.searchValue];
+    [self.refreshControl endRefreshing];
+}
+
 
 - (NSString *)formatTweetDateFromJSON:(NSString *)tweetDate
 {
@@ -126,11 +145,6 @@ static NSString *const CellID = @"SearchResults";
                            }];
 }
 
-- (void)displayInlinePhoto
-{
-    
-}
-
 #pragma mark - Text Field
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -145,8 +159,8 @@ static NSString *const CellID = @"SearchResults";
     [self.tableView reloadData];
     [self.tweets removeAllObjects];
     self.clearData = NO;
-    NSString *searchValue = textField.text;
-    [self searchResultsFromValue:searchValue];
+    self.searchValue = textField.text;
+    [self searchResultsFromValue:self.searchValue];
     [textField resignFirstResponder];
     return NO;
 }
@@ -170,6 +184,7 @@ static NSString *const CellID = @"SearchResults";
     cell.tweetText.text = tweetDict[@"text"];
     cell.tweetText.numberOfLines = 0;
     [cell.tweetText sizeToFit];
+    cell.userImage.image = nil;
     cell.inlinePhoto.image = nil;
     
     [self.twitter profileImageFor:screenName successBlock:^(id image) {
