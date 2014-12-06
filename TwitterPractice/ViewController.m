@@ -190,6 +190,9 @@ static NSString *const CellID = @"SearchResults";
     
     [self.twitter profileImageFor:screenName successBlock:^(id image) {
         cell.userImage.image = image;
+        CALayer *userImageLayer = [cell.userImage layer];
+        [userImageLayer setMasksToBounds:YES];
+        [userImageLayer setCornerRadius:10.0];
     } errorBlock:^(NSError *error) {
         //error handling
     }];
