@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "TweetReplyViewController.h"
 #import "STTwitter.h"
 #import "TableViewCell.h"
 #import <CoreLocation/CoreLocation.h>
@@ -72,7 +73,7 @@ static NSString *const CellID = @"SearchResults";
         NSString *geo = [NSString stringWithFormat:@"%@,%@,%@", Latitude, Longitude, Range];
         
         [self.twitter getSearchTweetsWithQuery:value geocode:geo lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:@1 callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
-            NSLog(@"%@", statuses);
+            //NSLog(@"%@", statuses);
             [self.tweets addObjectsFromArray:statuses];
             [self refreshTableView];
             
@@ -212,6 +213,18 @@ static NSString *const CellID = @"SearchResults";
     }
     
     [cell setNeedsUpdateConstraints];
+}
+
+- (IBAction)replyButtonPressed:(id)sender
+{
+    TableViewCell *clickedCell = (TableViewCell *)[[sender superview] superview];
+    NSIndexPath *clickedButtonPath = [self.tableView indexPathForCell:clickedCell];
+    
+    NSDictionary *tweetDict = self.tweets[clickedButtonPath.row];
+    
+    TweetReplyViewController *viewController = [[TweetReplyViewController alloc] initWithNibName:nil bundle:nil];
+    viewController.tweetDictionary = tweetDict;
+    [self presentViewController:viewController animated:YES completion:nil];
 }
 
 #pragma mark - Text Field

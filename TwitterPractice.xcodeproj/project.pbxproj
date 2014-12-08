@@ -12,6 +12,8 @@
 		C906DB991A2FA29D00AB2507 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C906DB981A2FA29D00AB2507 /* Twitter.framework */; };
 		C906DB9C1A2FB21A00AB2507 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C906DB9B1A2FB21A00AB2507 /* TableViewCell.m */; };
 		C9076FA41A30769D003654B9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9076FA31A30769D003654B9 /* CoreLocation.framework */; };
+		C96EBE071A35C36B0086FBE8 /* TweetReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C96EBE051A35C36B0086FBE8 /* TweetReplyViewController.m */; };
+		C96EBE081A35C36B0086FBE8 /* TweetReplyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C96EBE061A35C36B0086FBE8 /* TweetReplyViewController.xib */; };
 		C974A4101A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F41A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m */; };
 		C974A4111A2F9C1C00FB595B /* NSError+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F61A2F9C1C00FB595B /* NSError+STTwitter.m */; };
 		C974A4121A2F9C1C00FB595B /* NSString+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = C974A3F81A2F9C1C00FB595B /* NSString+STTwitter.m */; };
@@ -51,6 +53,9 @@
 		C906DB9A1A2FB21900AB2507 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		C906DB9B1A2FB21A00AB2507 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		C9076FA31A30769D003654B9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		C96EBE041A35C36B0086FBE8 /* TweetReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetReplyViewController.h; sourceTree = "<group>"; };
+		C96EBE051A35C36B0086FBE8 /* TweetReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetReplyViewController.m; sourceTree = "<group>"; };
+		C96EBE061A35C36B0086FBE8 /* TweetReplyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetReplyViewController.xib; sourceTree = "<group>"; };
 		C974A3F31A2F9C1C00FB595B /* NSDateFormatter+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+STTwitter.h"; sourceTree = "<group>"; };
 		C974A3F41A2F9C1C00FB595B /* NSDateFormatter+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+STTwitter.m"; sourceTree = "<group>"; };
 		C974A3F51A2F9C1C00FB595B /* NSError+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+STTwitter.h"; sourceTree = "<group>"; };
@@ -191,6 +196,9 @@
 				C979C82C1A2CC8DE00D940EC /* ViewController.m */,
 				C906DB9A1A2FB21900AB2507 /* TableViewCell.h */,
 				C906DB9B1A2FB21A00AB2507 /* TableViewCell.m */,
+				C96EBE041A35C36B0086FBE8 /* TweetReplyViewController.h */,
+				C96EBE051A35C36B0086FBE8 /* TweetReplyViewController.m */,
+				C96EBE061A35C36B0086FBE8 /* TweetReplyViewController.xib */,
 				C979C82E1A2CC8DE00D940EC /* Main.storyboard */,
 				C979C8311A2CC8DE00D940EC /* Images.xcassets */,
 				C979C8331A2CC8DE00D940EC /* LaunchScreen.xib */,
@@ -306,6 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C979C8301A2CC8DE00D940EC /* Main.storyboard in Resources */,
+				C96EBE081A35C36B0086FBE8 /* TweetReplyViewController.xib in Resources */,
 				C979C8351A2CC8DE00D940EC /* LaunchScreen.xib in Resources */,
 				C979C8321A2CC8DE00D940EC /* Images.xcassets in Resources */,
 			);
@@ -338,6 +347,7 @@
 				C974A4161A2F9C1C00FB595B /* STTwitterHTML.m in Sources */,
 				C974A41C1A2F9C1C00FB595B /* STHTTPRequest.m in Sources */,
 				C974A4151A2F9C1C00FB595B /* STTwitterAppOnly.m in Sources */,
+				C96EBE071A35C36B0086FBE8 /* TweetReplyViewController.m in Sources */,
 				C974A41B1A2F9C1C00FB595B /* JSONSyntaxHighlight.m in Sources */,
 				C974A4191A2F9C1C00FB595B /* STTwitterOSRequest.m in Sources */,
 				C974A4171A2F9C1C00FB595B /* STTwitterOAuth.m in Sources */,

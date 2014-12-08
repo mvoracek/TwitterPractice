@@ -17,5 +17,4 @@
 @property (weak, nonatomic) IBOutlet UILabel *placeLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *inlinePhoto;
 
-
 @end
