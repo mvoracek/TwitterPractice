@@ -232,7 +232,7 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
     
     cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
     cell.timeLabel.text = tweetDate;
-    cell.screenImage.text = screenName;
+    cell.screenNameLabel.text = screenName;
     cell.tweetText.text = formattedTweetText;
     cell.tweetText.numberOfLines = 0;
     [cell.tweetText sizeToFit];

@@ -109,7 +109,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="placeLabel" destination="gty-m9-VGg" id="2rx-49-ycO"/>
-                                            <outlet property="screenImage" destination="B9b-IA-DR1" id="wCk-Y6-2U7"/>
+                                            <outlet property="screenNameLabel" destination="B9b-IA-DR1" id="mNn-um-B28"/>
                                             <outlet property="timeLabel" destination="ucr-lt-81S" id="RMr-TR-1fh"/>
                                             <outlet property="tweetText" destination="Lwm-48-91R" id="N2t-it-eob"/>
                                             <outlet property="userImage" destination="37h-TF-3KV" id="6JQ-Rx-ha6"/>
@@ -205,7 +205,7 @@
                                         <connections>
                                             <outlet property="inlineImage" destination="nGw-09-xiX" id="N75-To-0lw"/>
                                             <outlet property="placeLabel" destination="G62-lB-fo2" id="F1z-o0-CsZ"/>
-                                            <outlet property="screenImage" destination="eE2-rK-RMb" id="gb3-E2-6a6"/>
+                                            <outlet property="screenNameLabel" destination="eE2-rK-RMb" id="GqY-74-4kG"/>
                                             <outlet property="timeLabel" destination="zOO-tF-Q9q" id="JGU-Ko-11A"/>
                                             <outlet property="tweetText" destination="uxT-z6-Wj2" id="E1g-px-lcF"/>
                                             <outlet property="userImage" destination="AKw-UM-zkh" id="DG2-L1-EXD"/>
