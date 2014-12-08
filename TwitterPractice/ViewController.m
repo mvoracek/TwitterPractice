@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 
+@property (nonatomic, strong) TableViewCell *prototypeCell;
 @property  UIRefreshControl *refreshControl;
 @property (nonatomic, strong) STTwitterAPI *twitter;
 @property (nonatomic, strong) NSMutableArray *tweets;
@@ -42,11 +43,22 @@ static NSString *const CellID = @"SearchResults";
     [super viewDidLoad];
     self.tweets = [NSMutableArray array];
     self.searchValue = [[NSString alloc] init];
+    
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshByControl) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
 //    [self.tableView addSubview:refreshControl];
     
+    self.tableView.estimatedRowHeight = 270.0f;    
+}
+
+- (TableViewCell *)prototypeCell
+{
+    if (!_prototypeCell)
+    {
+        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:CellID];
+    }
+    return _prototypeCell;
 }
 
 - (void)searchResultsFromValue:(NSString *)value
@@ -150,6 +162,58 @@ static NSString *const CellID = @"SearchResults";
                            }];
 }
 
+- (void)configureCell:(TableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *tweetDict = self.tweets[indexPath.row];
+    
+    //placeholder image
+    //cell.userImage.image = [UIImage imageNamed:@"default"];
+    
+    NSString *screenName = tweetDict[@"user"][@"screen_name"];
+    NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
+    NSURL *profileImageURL = [NSURL URLWithString:tweetDict[@"user"][@"profile_image_url_https"]];
+    
+    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
+    cell.timeLabel.text = tweetDate;
+    cell.screenImage.text = screenName;
+    cell.tweetText.text = tweetDict[@"text"];
+    cell.tweetText.numberOfLines = 0;
+    [cell.tweetText sizeToFit];
+    cell.tweetText.preferredMaxLayoutWidth = CGRectGetWidth(self.tableView.bounds);
+    cell.userImage.image = nil;
+    cell.inlinePhoto.image = nil;
+    
+    [self downloadImageWithURL:profileImageURL completionBlock:^(BOOL succeeded, UIImage *image) {
+        if (succeeded) {
+            cell.userImage.image = image;
+            CALayer *userImageLayer = [cell.userImage layer];
+            [userImageLayer setMasksToBounds:YES];
+            [userImageLayer setCornerRadius:10.0];
+        } else {
+            //error handling
+        }
+    }];
+    
+    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
+    
+    if (mediaDict) {
+        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
+            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
+            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    cell.inlinePhoto.image = image;
+                } else {
+                    //error handling
+                }
+            }];
+        }
+    } else {
+        //        [cell.inlinePhoto setHidden:YES];
+    }
+    
+    [cell setNeedsUpdateConstraints];
+}
+
 #pragma mark - Text Field
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -171,47 +235,50 @@ static NSString *const CellID = @"SearchResults";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellID forIndexPath:indexPath];
-    NSDictionary *tweetDict = self.tweets[indexPath.row];
-    
-    //placeholder image
-    //cell.userImage.image = [UIImage imageNamed:@"default"];
-    
-    NSString *screenName = tweetDict[@"user"][@"screen_name"];
-    NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
-    
-    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
-    cell.timeLabel.text = tweetDate;
-    cell.screenImage.text = screenName;
-    cell.tweetText.text = tweetDict[@"text"];
-    cell.tweetText.numberOfLines = 0;
-    [cell.tweetText sizeToFit];
-    cell.userImage.image = nil;
-    cell.inlinePhoto.image = nil;
-    
-    [self.twitter profileImageFor:screenName successBlock:^(id image) {
-        cell.userImage.image = image;
-        CALayer *userImageLayer = [cell.userImage layer];
-        [userImageLayer setMasksToBounds:YES];
-        [userImageLayer setCornerRadius:10.0];
-    } errorBlock:^(NSError *error) {
-        //error handling
-    }];
-    
-    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
-    
-    if (mediaDict) {
-        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
-            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
-            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
-                if (succeeded) {
-                    cell.inlinePhoto.image = image;
-                } else {
-                    //error handling
-                }
-            }];
-        }
-    }
-    
+    [self configureCell:cell forRowAtIndexPath:indexPath];
+//    NSDictionary *tweetDict = self.tweets[indexPath.row];
+//    
+//    //placeholder image
+//    //cell.userImage.image = [UIImage imageNamed:@"default"];
+//    
+//    NSString *screenName = tweetDict[@"user"][@"screen_name"];
+//    NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
+//    
+//    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
+//    cell.timeLabel.text = tweetDate;
+//    cell.screenImage.text = screenName;
+//    cell.tweetText.text = tweetDict[@"text"];
+//    cell.tweetText.numberOfLines = 0;
+//    [cell.tweetText sizeToFit];
+//    cell.userImage.image = nil;
+//    cell.inlinePhoto.image = nil;
+//    
+//    [self.twitter profileImageFor:screenName successBlock:^(id image) {
+//        cell.userImage.image = image;
+//        CALayer *userImageLayer = [cell.userImage layer];
+//        [userImageLayer setMasksToBounds:YES];
+//        [userImageLayer setCornerRadius:10.0];
+//    } errorBlock:^(NSError *error) {
+//        //error handling
+//    }];
+//    
+//    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
+//    
+//    if (mediaDict) {
+//        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
+//            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
+//            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
+//                if (succeeded) {
+//                    cell.inlinePhoto.image = image;
+//                } else {
+//                    //error handling
+//                }
+//            }];
+//        }
+//    } else {
+////        [cell.inlinePhoto setHidden:YES];
+//    }
+//    
    
     return cell;
 }
@@ -224,9 +291,32 @@ static NSString *const CellID = @"SearchResults";
     return [self.tweets count];
 }
 
+//- (CGFloat)heightForBasicCellAtIndexPath:(NSIndexPath *)indexPath {
+//    static TableViewCell *sizingCell = nil;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        sizingCell = [self.tableView dequeueReusableCellWithIdentifier:CellID];
+//    });
+//    
+//    [self configureCell:sizingCell forRowAtIndexPath:indexPath];
+//    
+//    sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(sizingCell.bounds));
+//    NSLog(@"%f", CGRectGetHeight(sizingCell.bounds));
+//    [sizingCell setNeedsLayout];
+//    [sizingCell layoutIfNeeded];
+//    
+//    CGSize size = [sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+//    return size.height + 1.0f;
+//}
+
 //- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
-//    return 200.0;
+//    return [self heightForBasicCellAtIndexPath:indexPath];
+//}
+
+//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return UITableViewAutomaticDimension;
 //}
 
 @end
