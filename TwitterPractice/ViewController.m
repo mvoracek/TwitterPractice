@@ -52,18 +52,6 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshByControl) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
-//    [self.tableView addSubview:refreshControl];
-    
-    self.tableView.estimatedRowHeight = 270.0f;
-}
-
-- (TableViewCell *)prototypeCell
-{
-    if (!_prototypeCell)
-    {
-        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:CellID];
-    }
-    return _prototypeCell;
 }
 
 - (void)searchResultsFromValue:(NSString *)value
@@ -96,7 +84,7 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
                                       NSString *lastTweetID = lastTweet[@"id_str"];
                                       long lastTweetIDMinusOne = [lastTweetID longLongValue] - 1;
                                       self.maxID = [NSString stringWithFormat:@"%ld", lastTweetIDMinusOne];
-                                      [self refreshTableView];
+                                      [self.tableView reloadData];
                                   }
                                     errorBlock:^(NSError *error) {
                                         NSLog(@"%@", error.debugDescription);
@@ -107,16 +95,8 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
     }];
 }
 
-- (void)refreshTableView
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-    });
-}
-
 - (void)refreshByControl
 {
-    self.maxID = nil;
     [self refreshTable];
     [self.refreshControl endRefreshing];
 }
@@ -126,6 +106,7 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
     self.clearData = YES;
     [self.tableView reloadData];
     [self.tweets removeAllObjects];
+    self.maxID = nil;
     self.clearData = NO;
     [self searchResultsFromValue:self.searchValue];
 }
@@ -141,11 +122,8 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
     NSTimeInterval distanceBetweenDates = [currentDate timeIntervalSinceDate:userPostDate];
     
     NSTimeInterval theTimeInterval = distanceBetweenDates;
-    
-    // Get the system calendar
     NSCalendar *sysCalendar = [NSCalendar currentCalendar];
     
-    // Create the NSDates
     NSDate *date1 = [[NSDate alloc] init];
     NSDate *date2 = [[NSDate alloc] initWithTimeInterval:theTimeInterval sinceDate:date1];
     
@@ -183,40 +161,6 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
                                    completionBlock(NO,nil);
                                }
                            }];
-}
-
-- (void)configureCell:(TableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSDictionary *tweetDict = self.tweets[indexPath.row];
-    
-    //placeholder image
-    //cell.userImage.image = [UIImage imageNamed:@"default"];
-    
-    NSString *screenName = tweetDict[@"user"][@"screen_name"];
-    NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
-    NSURL *profileImageURL = [NSURL URLWithString:tweetDict[@"user"][@"profile_image_url_https"]];
-    
-    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
-    cell.timeLabel.text = tweetDate;
-    cell.screenImage.text = screenName;
-    cell.tweetText.text = tweetDict[@"text"];
-    cell.tweetText.numberOfLines = 0;
-    [cell.tweetText sizeToFit];
-    cell.tweetText.preferredMaxLayoutWidth = CGRectGetWidth(self.tableView.bounds);
-    cell.userImage.image = nil;
-    
-    [self downloadImageWithURL:profileImageURL completionBlock:^(BOOL succeeded, UIImage *image) {
-        if (succeeded) {
-            cell.userImage.image = image;
-            CALayer *userImageLayer = [cell.userImage layer];
-            [userImageLayer setMasksToBounds:YES];
-            [userImageLayer setCornerRadius:10.0];
-        } else {
-            //error handling
-        }
-    }];
-    
-    [cell setNeedsUpdateConstraints];
 }
 
 -(void)scrollViewDidScroll: (UIScrollView*)scrollView
@@ -264,16 +208,47 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
 - (TableViewCell *)BasicCellAtIndexPath:(NSIndexPath *)indexPath
 {
     TableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellID forIndexPath:indexPath];
-    [self configureCell:cell forRowAtIndexPath:indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
 - (TableViewCellWithImage *)ImageCellAtIndexPath:(NSIndexPath *)indexPath
 {
     TableViewCellWithImage *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIDForImage forIndexPath:indexPath];
-    [self configureCell:cell forRowAtIndexPath:indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
     [self configureImageCell:cell atIndexPath:indexPath];
     return cell;
+}
+
+- (void)configureCell:(TableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *tweetDict = self.tweets[indexPath.row];
+    
+    NSString *screenName = tweetDict[@"user"][@"screen_name"];
+    NSString *tweetText = tweetDict[@"text"];
+    NSString *formattedTweetText = [tweetText stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+    NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
+    NSURL *profileImageURL = [NSURL URLWithString:tweetDict[@"user"][@"profile_image_url_https"]];
+    
+    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
+    cell.timeLabel.text = tweetDate;
+    cell.screenImage.text = screenName;
+    cell.tweetText.text = formattedTweetText;
+    cell.tweetText.numberOfLines = 0;
+    [cell.tweetText sizeToFit];
+    cell.tweetText.preferredMaxLayoutWidth = CGRectGetWidth(self.tableView.bounds);
+    cell.userImage.image = nil;
+    
+    [self downloadImageWithURL:profileImageURL completionBlock:^(BOOL succeeded, UIImage *image) {
+        if (succeeded) {
+            cell.userImage.image = image;
+            CALayer *userImageLayer = [cell.userImage layer];
+            [userImageLayer setMasksToBounds:YES];
+            [userImageLayer setCornerRadius:10.0];
+        } else {
+            //error handling
+        }
+    }];
 }
 
 - (void)configureImageCell:(TableViewCellWithImage *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -300,8 +275,8 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *tweetDict = self.tweets[indexPath.row];
-    
     NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
+    
     if (mediaDict) {
         if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
             return [self ImageCellAtIndexPath:indexPath];
@@ -317,33 +292,5 @@ static NSString *const CellIDForImage = @"SearchResultsWithImage";
     }
     return [self.tweets count];
 }
-
-//- (CGFloat)heightForBasicCellAtIndexPath:(NSIndexPath *)indexPath {
-//    static TableViewCell *sizingCell = nil;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        sizingCell = [self.tableView dequeueReusableCellWithIdentifier:CellID];
-//    });
-//    
-//    [self configureCell:sizingCell forRowAtIndexPath:indexPath];
-//    
-//    sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(sizingCell.bounds));
-//    NSLog(@"%f", CGRectGetHeight(sizingCell.bounds));
-//    [sizingCell setNeedsLayout];
-//    [sizingCell layoutIfNeeded];
-//    
-//    CGSize size = [sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-//    return size.height + 1.0f;
-//}
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return [self heightForBasicCellAtIndexPath:indexPath];
-//}
-
-//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return UITableViewAutomaticDimension;
-//}
 
 @end
