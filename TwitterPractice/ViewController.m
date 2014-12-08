@@ -10,6 +10,7 @@
 #import "TweetReplyViewController.h"
 #import "STTwitter.h"
 #import "TableViewCell.h"
+#import "TableViewCellWithImage.h"
 #import <CoreLocation/CoreLocation.h>
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
@@ -37,6 +38,7 @@ static NSString *Longitude = @"-87.62855";
 static NSString *Range = @"5mi";
 
 static NSString *const CellID = @"SearchResults";
+static NSString *const CellIDForImage = @"SearchResultsWithImage";
 
 @implementation ViewController
 
@@ -79,7 +81,7 @@ static NSString *const CellID = @"SearchResults";
                                           lang:nil
                                         locale:nil
                                     resultType:nil
-                                         count:@"15"
+                                         count:@"100"
                                          until:nil
                                        sinceID:nil
                                          maxID:self.maxID
@@ -114,6 +116,7 @@ static NSString *const CellID = @"SearchResults";
 
 - (void)refreshByControl
 {
+    self.maxID = nil;
     [self refreshTable];
     [self.refreshControl endRefreshing];
 }
@@ -201,7 +204,6 @@ static NSString *const CellID = @"SearchResults";
     [cell.tweetText sizeToFit];
     cell.tweetText.preferredMaxLayoutWidth = CGRectGetWidth(self.tableView.bounds);
     cell.userImage.image = nil;
-    cell.inlinePhoto.image = nil;
     
     [self downloadImageWithURL:profileImageURL completionBlock:^(BOOL succeeded, UIImage *image) {
         if (succeeded) {
@@ -213,23 +215,6 @@ static NSString *const CellID = @"SearchResults";
             //error handling
         }
     }];
-    
-    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
-    
-    if (mediaDict) {
-        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
-            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
-            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
-                if (succeeded) {
-                    cell.inlinePhoto.image = image;
-                } else {
-                    //error handling
-                }
-            }];
-        }
-    } else {
-        //        [cell.inlinePhoto setHidden:YES];
-    }
     
     [cell setNeedsUpdateConstraints];
 }
@@ -276,55 +261,53 @@ static NSString *const CellID = @"SearchResults";
 
 #pragma mark - Table View
 
+- (TableViewCell *)BasicCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    TableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellID forIndexPath:indexPath];
+    [self configureCell:cell forRowAtIndexPath:indexPath];
+    return cell;
+}
+
+- (TableViewCellWithImage *)ImageCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    TableViewCellWithImage *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIDForImage forIndexPath:indexPath];
+    [self configureCell:cell forRowAtIndexPath:indexPath];
+    [self configureImageCell:cell atIndexPath:indexPath];
+    return cell;
+}
+
+- (void)configureImageCell:(TableViewCellWithImage *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    cell.inlineImage.image = nil;
+    
+    NSDictionary *tweetDict = self.tweets[indexPath.row];
+    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
+    
+    if (mediaDict) {
+        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
+            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
+            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    cell.inlineImage.image = image;
+                } else {
+                    //error handling
+                }
+            }];
+        }
+    }
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellID forIndexPath:indexPath];
-    [self configureCell:cell forRowAtIndexPath:indexPath];
-//    NSDictionary *tweetDict = self.tweets[indexPath.row];
-//    
-//    //placeholder image
-//    //cell.userImage.image = [UIImage imageNamed:@"default"];
-//    
-//    NSString *screenName = tweetDict[@"user"][@"screen_name"];
-//    NSString *tweetDate = [self formatTweetDateFromJSON:tweetDict[@"created_at"]];
-//    
-//    cell.placeLabel.text = tweetDict[@"place"][@"full_name"];
-//    cell.timeLabel.text = tweetDate;
-//    cell.screenImage.text = screenName;
-//    cell.tweetText.text = tweetDict[@"text"];
-//    cell.tweetText.numberOfLines = 0;
-//    [cell.tweetText sizeToFit];
-//    cell.userImage.image = nil;
-//    cell.inlinePhoto.image = nil;
-//    
-//    [self.twitter profileImageFor:screenName successBlock:^(id image) {
-//        cell.userImage.image = image;
-//        CALayer *userImageLayer = [cell.userImage layer];
-//        [userImageLayer setMasksToBounds:YES];
-//        [userImageLayer setCornerRadius:10.0];
-//    } errorBlock:^(NSError *error) {
-//        //error handling
-//    }];
-//    
-//    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
-//    
-//    if (mediaDict) {
-//        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
-//            NSURL *url = [NSURL URLWithString:mediaDict[@"media_url_https"]];
-//            [self downloadImageWithURL:url completionBlock:^(BOOL succeeded, UIImage *image) {
-//                if (succeeded) {
-//                    cell.inlinePhoto.image = image;
-//                } else {
-//                    //error handling
-//                }
-//            }];
-//        }
-//    } else {
-////        [cell.inlinePhoto setHidden:YES];
-//    }
-//    
-   
-    return cell;
+    NSDictionary *tweetDict = self.tweets[indexPath.row];
+    
+    NSDictionary *mediaDict = tweetDict[@"entities"][@"media"][0];
+    if (mediaDict) {
+        if ([mediaDict[@"type"] isEqualToString:@"photo"]) {
+            return [self ImageCellAtIndexPath:indexPath];
+        }
+    }
+    return [self BasicCellAtIndexPath:indexPath];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
