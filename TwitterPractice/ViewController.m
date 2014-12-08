@@ -22,6 +22,7 @@
 @property (nonatomic, strong) STTwitterAPI *twitter;
 @property (nonatomic, strong) NSMutableArray *tweets;
 @property (nonatomic, strong) NSString *searchValue;
+@property (nonatomic, strong) NSString *maxID;
 @property BOOL clearData;
 
 @end
@@ -44,13 +45,14 @@ static NSString *const CellID = @"SearchResults";
     [super viewDidLoad];
     self.tweets = [NSMutableArray array];
     self.searchValue = [[NSString alloc] init];
+    self.maxID = [[NSString alloc] init];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshByControl) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
 //    [self.tableView addSubview:refreshControl];
     
-    self.tableView.estimatedRowHeight = 270.0f;    
+    self.tableView.estimatedRowHeight = 270.0f;
 }
 
 - (TableViewCell *)prototypeCell
@@ -72,14 +74,31 @@ static NSString *const CellID = @"SearchResults";
     [self.twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
         NSString *geo = [NSString stringWithFormat:@"%@,%@,%@", Latitude, Longitude, Range];
         
-        [self.twitter getSearchTweetsWithQuery:value geocode:geo lang:nil locale:nil resultType:nil count:@"100" until:nil sinceID:nil maxID:nil includeEntities:@1 callback:nil successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
-            //NSLog(@"%@", statuses);
-            [self.tweets addObjectsFromArray:statuses];
-            [self refreshTableView];
-            
-        } errorBlock:^(NSError *error) {
-            NSLog(@"%@", error.debugDescription);
-        }];
+        [self.twitter getSearchTweetsWithQuery:value
+                                       geocode:geo
+                                          lang:nil
+                                        locale:nil
+                                    resultType:nil
+                                         count:@"15"
+                                         until:nil
+                                       sinceID:nil
+                                         maxID:self.maxID
+                               includeEntities:@1
+                                      callback:nil
+                                  successBlock:^(NSDictionary *searchMetadata, NSArray *statuses) {
+                                      NSLog(@"%@", statuses);
+                                      NSLog(@"%@", searchMetadata);
+                                      [self.tweets addObjectsFromArray:statuses];
+                                      NSDictionary *lastTweet = [statuses lastObject];
+                                      NSLog(@"%@", lastTweet);
+                                      NSString *lastTweetID = lastTweet[@"id_str"];
+                                      long lastTweetIDMinusOne = [lastTweetID longLongValue] - 1;
+                                      self.maxID = [NSString stringWithFormat:@"%ld", lastTweetIDMinusOne];
+                                      [self refreshTableView];
+                                  }
+                                    errorBlock:^(NSError *error) {
+                                        NSLog(@"%@", error.debugDescription);
+                                    }];
         
     } errorBlock:^(NSError *error) {
         NSLog(@"%@", error.debugDescription);
@@ -213,6 +232,18 @@ static NSString *const CellID = @"SearchResults";
     }
     
     [cell setNeedsUpdateConstraints];
+}
+
+-(void)scrollViewDidScroll: (UIScrollView*)scrollView
+{
+    float scrollViewHeight = scrollView.frame.size.height;
+    float scrollContentSizeHeight = scrollView.contentSize.height;
+    float scrollOffset = scrollView.contentOffset.y;
+    
+    if (scrollOffset + scrollViewHeight == scrollContentSizeHeight)
+    {
+        [self searchResultsFromValue:self.searchValue];
+    }
 }
 
 - (IBAction)replyButtonPressed:(id)sender
